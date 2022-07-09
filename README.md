@@ -102,6 +102,20 @@ DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setCapability("name", "Selenium 4 Test");
         capabilities.setCapability("plugin", "git-junit");
 ```
+### Handling basic auth:
+
+The following code snippet illustrates how basic auth can be handled:
+```java
+DevTools devTools = ((HasDevTools) driver).getDevTools();
+devTools.createSession();
+
+driver = augmenter.addDriverAugmentation("chrome", HasAuthentication.class,
+                (caps, exec) -> (whenThisMatches, useTheseCredentials) -> devTools.getDomains().network()
+                        .addAuthHandler(whenThisMatches, useTheseCredentials))
+                .augment(driver);
+
+((HasAuthentication) driver).register(UsernameAndPassword.of("foo", "bar"));
+```
 
 ### Executing the Test
 
